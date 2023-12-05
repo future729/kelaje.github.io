@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Peer-to-Peer Chat</title>
+    <style>
+        #messagesContainer {
+            height: 200px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <div id="messagesContainer"></div>
+    <input type="text" id="messageInput" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const peerConnection = new RTCPeerConnection();
+
+        function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const messagesContainer = document.getElementById('messagesContainer');
+
+            const message = messageInput.value;
+
+            // Display the message locally
+            displayMessage('You', message);
+
+            // Send the message to the other peer
+            sendSignal('message', { sender: 'You', text: message });
+
+            // Clear the input field
+            messageInput.value = '';
+        }
+
+        function displayMessage(sender, text) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            messagesContainer.innerHTML += <div><strong>${sender}:</strong> ${text}</div>;
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        function sendSignal(type, data) {
+            const signalData = { type, data };
+
+            // Send the signal to the other peer
+            // You would typically use a signaling server for this in a production environment
+            // For simplicity, you can manually exchange signaling information between peers
+
+            // For example, if you have two peers, you might use a shared channel, URL parameter, or another method to exchange signaling data
+            // In this example, the other peer's signaling data should be manually pasted in the prompt
+            const otherPeerSignal = prompt('Paste the other peer\'s signaling data:');
+            const parsedSignal = JSON.parse(otherPeerSignal);
+
+            if (parsedSignal.type === 'message') {
+                displayMessage(parsedSignal.data.sender, parsedSignal.data.text);
+            }
+        }
+    </script>
+</body>
+</html>
